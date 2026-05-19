@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Guia de Estudos</title>
+    
+    <!-- CSS Files (Ctrl+Click para abrir) -->
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- TELA DE LOGIN -->
+        <div id="loginArea" class="login-card">
+            <i class="fas fa-user-shield logo-icon"></i>
+            <h1>GUIA DE ESTUDOS</h1>
+            <h2>Painel Administrativo</h2>
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> Login</label>
+                <input type="text" id="adminLogin" placeholder="admin">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-lock"></i> Senha</label>
+                <input type="password" id="adminSenha" placeholder="••••••••">
+            </div>
+            <button class="btn-main" onclick="loginAdmin()">Entrar</button>
+            <div id="loginResult" class="login-result"></div>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Voltar para o site</a>
+        </div>
+
+        <!-- PAINEL ADMIN -->
+        <div id="adminPanel" class="admin-panel hidden">
+            <!-- Header -->
+            <div class="admin-header">
+                <div class="logo-area">
+                    <i class="fas fa-user-shield"></i>
+                    <h1>Painel Administrativo</h1>
+                </div>
+                <div class="token-area">
+                    <i class="fas fa-key"></i> Token: <span id="adminTokenDisplay">---</span>
+                </div>
+                <button class="btn-icon" onclick="logoutAdmin()" title="Sair">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="mostrarTab('cursos')">
+                    <i class="fas fa-graduation-cap"></i> Cursos
+                </button>
+                <button class="tab-btn" onclick="mostrarTab('profissoes')">
+                    <i class="fas fa-briefcase"></i> Profissões
+                </button>
+                <button class="tab-btn" onclick="mostrarTab('usuarios')">
+                    <i class="fas fa-users"></i> Usuários
+                </button>
+            </div>
+            
+            <!-- Aba Cursos -->
+            <div id="tabCursos" class="tab-content active">
+                <div class="tab-header">
+                    <h2><i class="fas fa-graduation-cap"></i> Gerenciar Cursos</h2>
+                    <button class="btn-main btn-sm" onclick="abrirModalCurso()">
+                        <i class="fas fa-plus"></i> Novo Curso
+                    </button>
+                </div>
+                <div id="adminCursosList" class="table-container">
+                    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+                </div>
+            </div>
+            
+            <!-- Aba Profissões -->
+            <div id="tabProfissoes" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-briefcase"></i> Gerenciar Profissões</h2>
+                    <button class="btn-main btn-sm" onclick="abrirModalProfissao()">
+                        <i class="fas fa-plus"></i> Nova Profissão
+                    </button>
+                </div>
+                <div id="adminProfissoesList" class="table-container">
+                    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+                </div>
+            </div>
+            
+            <!-- Aba Usuários -->
+            <div id="tabUsuarios" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-users"></i> Gerenciar Usuários</h2>
+                </div>
+                <div id="adminUsuariosList" class="table-container">
+                    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+                </div>
+            </div>
+            
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Voltar para o site</a>
+        </div>
+    </div>
+    
+    <!-- MODAL CURSO -->
+    <div id="modalCurso" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalCursoTitle">Novo Curso</h3>
+                <span class="close-modal" onclick="fecharModal('modalCurso')">&times;</span>
+            </div>
+            <form id="formCurso">
+                <input type="hidden" id="cursoId">
+                <div class="input-group">
+                    <label><i class="fas fa-briefcase"></i> Profissão *</label>
+                    <select id="cursoProfissaoId" required></select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-book"></i> Título *</label>
+                    <input type="text" id="cursoTitulo" required placeholder="Nome do curso">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-link"></i> Link *</label>
+                    <input type="url" id="cursoLink" required placeholder="https://...">
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label><i class="fas fa-sort-numeric-down"></i> Ordem</label>
+                        <input type="number" id="cursoOrdem" value="999">
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-chart-line"></i> Dificuldade</label>
+                        <select id="cursoDificuldade">
+                            <option value="Iniciante">🌱 Iniciante</option>
+                            <option value="Intermediário">📚 Intermediário</option>
+                            <option value="Avançado">🚀 Avançado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-main">Salvar</button>
+                    <button type="button" class="btn-secondary" onclick="fecharModal('modalCurso')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL PROFISSÃO -->
+    <div id="modalProfissao" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalProfissaoTitle">Nova Profissão</h3>
+                <span class="close-modal" onclick="fecharModal('modalProfissao')">&times;</span>
+            </div>
+            <form id="formProfissao">
+                <input type="hidden" id="profissaoId">
+                <div class="input-group">
+                    <label><i class="fas fa-tag"></i> Nome *</label>
+                    <input type="text" id="profissaoNome" required placeholder="Ex: Desenvolvedor de Software">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-align-left"></i> Descrição</label>
+                    <textarea id="profissaoDescricao" rows="3" placeholder="Descrição da profissão..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-smile"></i> Ícone (emoji)</label>
+                    <input type="text" id="profissaoIcone" maxlength="10" placeholder="💻">
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-main">Salvar</button>
+                    <button type="button" class="btn-secondary" onclick="fecharModal('modalProfissao')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Files (Ctrl+Click para abrir) -->
+    <script src="js/admin.js"></script>
+</body>
+</html>
